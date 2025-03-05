@@ -43,3 +43,26 @@ self.addEventListener("activate", (event) => {
         })
     );
 });
+self.addEventListener('install', function(event) {
+    console.log('Service Worker installed');
+    event.waitUntil(
+        caches.open('static').then(function(cache) {
+            return cache.addAll([
+                '/Carbon-fee/Charge.html',
+                '/Carbon-fee/manifest.json',
+                '/Carbon-fee/icon-192.png',
+                '/Carbon-fee/icon-512.png',
+                '/Carbon-fee/service-worker.js'
+            ]);
+        })
+    );
+});
+
+self.addEventListener('fetch', function(event) {
+    event.respondWith(
+        caches.match(event.request).then(function(response) {
+            return response || fetch(event.request);
+        })
+    );
+});
+
