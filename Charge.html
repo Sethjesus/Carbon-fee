@@ -7,13 +7,6 @@
 
     <!-- PWA 支援 -->
     <link rel="manifest" href="/Carbon-fee/manifest.json">
-    <script>
-        if ("serviceWorker" in navigator) {
-            navigator.serviceWorker.register("/Carbon-fee/service-worker.js")
-                .then((reg) => console.log("✅ Service Worker 註冊成功", reg))
-                .catch((err) => console.error("❌ Service Worker 註冊失敗", err));
-        }
-    </script>
 
     <!-- Font Awesome 圖示支援 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
@@ -46,25 +39,29 @@
             padding: 20px;
             border-radius: 12px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            width: 90%;
-            max-width: 400px;
+            width: 95%;
+            max-width: 600px;
+            overflow: auto;
         }
 
         table {
             width: 100%;
             margin-top: 20px;
             border-collapse: collapse;
+            table-layout: fixed;
         }
 
         th, td {
             border: 1px solid #ddd;
             padding: 10px;
-            text-align: center;
+            text-align: right;
+            word-break: break-word;
         }
 
         th {
             background-color: #007BFF;
             color: white;
+            text-align: center;
         }
 
         button {
@@ -170,7 +167,7 @@
                 total_carbon += carbon;
 
                 table.innerHTML += `<tr>
-                    <td>${label}</td>
+                    <td style="text-align: center;">${label}</td>
                     <td>${electricity.toFixed(2)}</td>
                     <td>${rate.toFixed(2)}</td>
                     <td>${bill.toLocaleString()}</td>
@@ -185,22 +182,18 @@
         }
 
         function copyURL() {
-            navigator.clipboard.writeText(window.location.href).then(() => alert("網址已複製！"));
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                alert("網址已複製！");
+            });
         }
 
         function installPWA() {
             if (deferredPrompt) {
                 deferredPrompt.prompt();
-                deferredPrompt = null;
             } else {
-                alert("PWA 無法安裝或已安裝！");
+                alert("此裝置不支援 PWA 安裝或已安裝");
             }
         }
-
-        window.addEventListener("beforeinstallprompt", (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-        });
 
         document.addEventListener("DOMContentLoaded", initInputs);
     </script>
