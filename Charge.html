@@ -7,6 +7,13 @@
 
     <!-- PWA 支援 -->
     <link rel="manifest" href="/Carbon-fee/manifest.json">
+    <script>
+        if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.register("/Carbon-fee/service-worker.js")
+                .then((reg) => console.log("✅ Service Worker 註冊成功", reg))
+                .catch((err) => console.error("❌ Service Worker 註冊失敗", err));
+        }
+    </script>
 
     <!-- Font Awesome 圖示支援 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
@@ -164,38 +171,36 @@
 
                 table.innerHTML += `<tr>
                     <td>${label}</td>
-                    <td>${electricity.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                    <td>${electricity.toFixed(2)}</td>
                     <td>${rate.toFixed(2)}</td>
                     <td>${bill.toLocaleString()}</td>
-                    <td>${carbon.toLocaleString(undefined, {minimumFractionDigits: 4, maximumFractionDigits: 4})}</td>
+                    <td>${carbon.toFixed(4)}</td>
                 </tr>`;
             });
 
-            document.getElementById("total_electricity").innerText = total_electricity.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
-            document.getElementById("carbon_emission").innerText = total_carbon.toLocaleString(undefined, {minimumFractionDigits: 4, maximumFractionDigits: 4});
+            document.getElementById("total_electricity").innerText = total_electricity.toFixed(2);
+            document.getElementById("carbon_emission").innerText = total_carbon.toFixed(4);
             document.getElementById("carbon_fee").innerText = total_fee.toLocaleString();
-            document.getElementById("company_carbon").innerText = (total_carbon / 0.7).toLocaleString(undefined, {minimumFractionDigits: 4, maximumFractionDigits: 4});
+            document.getElementById("company_carbon").innerText = (total_carbon / 0.7).toFixed(4);
         }
 
         function copyURL() {
-            navigator.clipboard.writeText(window.location.href).then(() => {
-                alert("網址已複製！");
-            });
+            navigator.clipboard.writeText(window.location.href).then(() => alert("網址已複製！"));
         }
 
         function installPWA() {
             if (deferredPrompt) {
                 deferredPrompt.prompt();
-                deferredPrompt.userChoice.then(choiceResult => {
-                    if (choiceResult.outcome === "accepted") {
-                        console.log("✅ PWA 安裝成功");
-                    }
-                    deferredPrompt = null;
-                });
+                deferredPrompt = null;
             } else {
-                alert("此裝置不支援 PWA 安裝或已安裝");
+                alert("PWA 無法安裝或已安裝！");
             }
         }
+
+        window.addEventListener("beforeinstallprompt", (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+        });
 
         document.addEventListener("DOMContentLoaded", initInputs);
     </script>
