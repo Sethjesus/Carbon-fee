@@ -5,8 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>電費與碳排放計算器 (營業用電)</title>
 
-    <!-- Font Awesome 圖示支援 -->
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <!-- PWA 支援 -->
+    <link rel="manifest" href="manifest.json">
+
+    <!-- Font Awesome 修正 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
     <style>
         body {
@@ -29,7 +32,6 @@
             justify-content: center;
             gap: 20px;
             margin-top: 20px;
-            text-align: center;
         }
 
         .card {
@@ -39,7 +41,6 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
             width: 90%;
             max-width: 400px;
-            text-align: center;
         }
 
         .button-container {
@@ -61,7 +62,6 @@
             border: none;
             cursor: pointer;
             border-radius: 8px;
-            transition: 0.3s;
             width: 90%;
             max-width: 300px;
         }
@@ -162,7 +162,6 @@
         function initInputs() {
             const inputFields = document.getElementById("input-fields");
             inputFields.innerHTML = "";
-
             months.forEach((label, index) => {
                 inputFields.innerHTML += `
                     <div>
@@ -183,26 +182,16 @@
             table.innerHTML = `<tr>
                 <th>月份</th><th>總用電量 (kWh)</th><th>適用費率 (NTD/kWh)</th><th>電費 (NTD)</th><th>碳排放量 (噸)</th>
             </tr>`;
-
             months.forEach((label, index) => {
                 let bill = parseFloat(document.getElementById(`bill_${index}`).value.replace(/,/g, '')) || 0;
                 let rate = rates[index];
                 let electricity = bill / rate;
                 let carbon = electricity * 0.495 / 1000;
-
                 total_electricity += electricity;
                 total_fee += bill;
                 total_carbon += carbon;
-
-                table.innerHTML += `<tr>
-                    <td>${label}</td>
-                    <td>${electricity.toFixed(2)}</td>
-                    <td>${rate.toFixed(2)}</td>
-                    <td>${bill.toLocaleString()}</td>
-                    <td>${carbon.toFixed(4)}</td>
-                </tr>`;
+                table.innerHTML += `<tr><td>${label}</td><td>${electricity.toFixed(2)}</td><td>${rate.toFixed(2)}</td><td>${bill.toLocaleString()}</td><td>${carbon.toFixed(4)}</td></tr>`;
             });
-
             document.getElementById("total_electricity").innerText = total_electricity.toFixed(2);
             document.getElementById("carbon_emission").innerText = total_carbon.toFixed(4);
             document.getElementById("carbon_fee").innerText = total_fee.toLocaleString();
@@ -210,36 +199,6 @@
         }
 
         document.addEventListener("DOMContentLoaded", initInputs);
-        if ("serviceWorker" in navigator) {
-        window.addEventListener("load", () => {
-            navigator.serviceWorker.register("service-worker.js")
-            .then(() => console.log("✅ Service Worker 註冊成功"))
-            .catch(error => console.log("❌ Service Worker 註冊失敗", error));
-        });
-    }
-    let deferredPrompt;
-
-window.addEventListener("beforeinstallprompt", (event) => {
-    event.preventDefault();
-    deferredPrompt = event;
-    console.log("✅ PWA 安裝提示已攔截");
-});
-
-function installPWA() {
-    if (deferredPrompt) {
-        deferredPrompt.prompt();
-        deferredPrompt.userChoice.then((choiceResult) => {
-            if (choiceResult.outcome === "accepted") {
-                console.log("✅ 用戶接受安裝 PWA");
-            } else {
-                console.log("❌ 用戶拒絕安裝 PWA");
-            }
-            deferredPrompt = null;
-        });
-    } else {
-        alert("此裝置不支援 PWA 安裝或已經安裝");
-    }
-}
     </script>
 </body>
 </html>
