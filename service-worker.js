@@ -6,7 +6,6 @@ const urlsToCache = [
     "icon-512.png"
 ];
 
-// 安裝 Service Worker 並快取資源
 self.addEventListener("install", (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME)
@@ -14,8 +13,10 @@ self.addEventListener("install", (event) => {
             console.log("✅ 快取中:", urlsToCache);
             return cache.addAll(urlsToCache);
         })
+        .catch(error => console.log("❌ 快取失敗:", error))
     );
 });
+
 
 // 監聽 fetch 事件，回應快取內容
 self.addEventListener("fetch", (event) => {
