@@ -119,9 +119,6 @@
     </div>
 
     <div class="container">
-        <button onclick="installPWA()">
-            <i class="fas fa-download"></i> 下載應用程式
-        </button>
         <button onclick="copyURL()">
             <i class="fas fa-clipboard"></i> 長按複製網址
         </button>
@@ -185,14 +182,6 @@
             navigator.clipboard.writeText(window.location.href).then(() => {
                 alert("網址已複製！");
             });
-        }
-
-        function installPWA() {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-            } else {
-                alert("此裝置不支援 PWA 安裝或已安裝");
-            }
         }
 
         document.addEventListener("DOMContentLoaded", initInputs);
