@@ -1,23 +1,22 @@
 {
-   "id": "https://sethjesus.github.io/Carbon-fee/",
+    "id": "/",
     "name": "Carbon Fee Calculator",
     "short_name": "Carbon Fee",
-   "start_url": "https://sethjesus.github.io/Carbon-fee/Charge.html",
-   "scope": "https://sethjesus.github.io/Carbon-fee/",
-
+    "start_url": "./Charge.html",
+    "scope": "./",
     "display": "standalone",
     "background_color": "#ffffff",
     "theme_color": "#007BFF",
-   "icons": [
-    {
-      "src": "https://sethjesus.github.io/Carbon-fee/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "https://sethjesus.github.io/Carbon-fee/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
-]
+    "icons": [
+        {
+            "src": "./icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "./icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
 }
