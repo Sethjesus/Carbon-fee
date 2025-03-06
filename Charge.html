@@ -51,20 +51,17 @@
             width: 100%;
             margin-top: 20px;
             border-collapse: collapse;
-            table-layout: fixed;
         }
 
         th, td {
             border: 1px solid #ddd;
             padding: 10px;
-            text-align: right;
-            word-break: break-word;
+            text-align: center;
         }
 
         th {
             background-color: #007BFF;
             color: white;
-            text-align: center;
         }
 
         button {
@@ -123,26 +120,18 @@
 
     <div class="container">
         <button onclick="copyURL()">
-            <i class="fas fa-clipboard"></i> 長按複製網址
+            <i class="fas fa-clipboard"></i> 複製網址
         </button>
     </div>
 
     <script>
-        let deferredPrompt;
         const months = ["1~2月", "3~4月", "5~6月 (夏季)", "7~8月 (夏季)", "9~10月", "11~12月"];
         const rates = [5.83, 5.83, 7.43, 7.43, 5.83, 5.83];
-
-        function initInputs() {
-            const inputFields = document.getElementById("input-fields");
-            inputFields.innerHTML = "";
-            months.forEach((label, index) => {
-                inputFields.innerHTML += `
-                    <div>
-                        <label>${label}</label>
-                        <input type="text" id="bill_${index}" value="10000" oninput="formatInput(this)">
-                    </div>`;
-            });
-        }
+        const inputFields = document.getElementById("input-fields");
+        
+        months.forEach((month, index) => {
+            inputFields.innerHTML += `<div><label>${month} (NTD/kWh: ${rates[index]})</label> <input type='text' id='bill_${index}' value='10,000' oninput='formatInput(this)'></div>`;
+        });
 
         function formatInput(input) {
             let value = input.value.replace(/,/g, '').replace(/\D/g, '');
@@ -150,24 +139,24 @@
         }
 
         function calculateElectricity() {
-            let total_electricity = 0, total_fee = 0, total_carbon = 0;
+            let totalElectricity = 0, totalFee = 0, totalCarbon = 0;
             const table = document.getElementById("carbon-table");
             table.innerHTML = `<tr>
                 <th>月份</th><th>總用電量 (kWh)</th><th>適用費率 (NTD/kWh)</th><th>電費 (NTD)</th><th>碳排放量 (噸)</th>
             </tr>`;
-
-            months.forEach((label, index) => {
+            
+            months.forEach((month, index) => {
                 let bill = parseFloat(document.getElementById(`bill_${index}`).value.replace(/,/g, '')) || 0;
                 let rate = rates[index];
                 let electricity = bill / rate;
                 let carbon = electricity * 0.495 / 1000;
 
-                total_electricity += electricity;
-                total_fee += bill;
-                total_carbon += carbon;
+                totalElectricity += electricity;
+                totalFee += bill;
+                totalCarbon += carbon;
 
                 table.innerHTML += `<tr>
-                    <td style="text-align: center;">${label}</td>
+                    <td>${month}</td>
                     <td>${electricity.toFixed(2)}</td>
                     <td>${rate.toFixed(2)}</td>
                     <td>${bill.toLocaleString()}</td>
@@ -175,19 +164,19 @@
                 </tr>`;
             });
 
-            document.getElementById("total_electricity").innerText = total_electricity.toFixed(2);
-            document.getElementById("carbon_emission").innerText = total_carbon.toFixed(4);
-            document.getElementById("carbon_fee").innerText = total_fee.toLocaleString();
-            document.getElementById("company_carbon").innerText = (total_carbon / 0.7).toFixed(4);
+            document.getElementById("total_electricity").innerText = totalElectricity.toFixed(2);
+            document.getElementById("carbon_emission").innerText = totalCarbon.toFixed(4);
+            document.getElementById("carbon_fee").innerText = totalFee.toLocaleString();
+            document.getElementById("company_carbon").innerText = (totalCarbon / 0.7).toFixed(4);
         }
 
         function copyURL() {
             navigator.clipboard.writeText(window.location.href).then(() => {
                 alert("網址已複製！");
+            }).catch(() => {
+                alert("複製失敗，請手動複製網址。");
             });
         }
-
-        document.addEventListener("DOMContentLoaded", initInputs);
     </script>
 </body>
 </html>
