@@ -5,9 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>電費與碳排放計算器 (營業用電)</title>
 
-    <!-- PWA 支援 -->
-    <link rel="manifest" href="manifest.json">
-    
+    <!-- PWA 支援（動態路徑適應本地與 GitHub Pages） -->
+    <script>
+        let basePath = location.hostname === "sethjesus.github.io" ? "/Carbon-fee" : "";
+        document.write(`<link rel="manifest" href="${basePath}/manifest.json">`);
+    </script>
+
     <!-- 設定 PWA 的主題色 -->
     <meta name="theme-color" content="#007BFF">
 
@@ -176,6 +179,12 @@
             }).catch(() => {
                 alert("複製失敗，請手動複製網址。");
             });
+        }
+
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register(`${basePath}/service-worker.js`)
+            .then(() => console.log('Service Worker 註冊成功'))
+            .catch(err => console.error('Service Worker 註冊失敗', err));
         }
     </script>
 </body>
